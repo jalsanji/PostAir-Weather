@@ -29,7 +29,7 @@
               "apikey": [
                 {
                   "key": "value",
-                  "value": "",
+                  "value": "1234",
                   "type": "string"
                 },
                 {
@@ -1170,7 +1170,7 @@
     "apikey": [
       {
         "key": "value",
-        "value": "",
+        "value": "{{apiKey}}",
         "type": "string"
       },
       {
