@@ -1,0 +1,43 @@
+name: Ejecutar Pruebas de Postman con Newman
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+  workflow_dispatch: # Permite ejecutar las pruebas manualmente con un botón
+
+jobs:
+  test-api:
+    runs-on: ubuntu-latest
+
+    steps:
+    # 1. Copiar los archivos de tu repositorio al servidor virtual
+    - name: Copiar repositorio
+      uses: actions/checkout@v4
+
+    # 2. Instalar Node.js
+    - name: Instalar Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+
+    # 3. Instalar Newman y el generador de reportes visuales
+    - name: Instalar Newman
+      run: npm install -g newman newman-reporter-htmlextra
+
+    # 4. Ejecutar Newman e inyectar de forma segura tu API Key en la variable apiKey
+    - name: Ejecutar Coleccion de Postman
+      run: |
+        newman run "PostAir Weather API.postman_collection.json" \
+          -e "Dev Environment.postman_environment.json" \
+          --env-var "apiKey=${{ secrets.POSTMAN_API_KEY }}" \
+          -r cli,htmlextra
+
+    # 5. Guardar el reporte para que lo descargues si algo falla
+    - name: Guardar Reporte de Pruebas
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: reporte-postman
+        path: newman/
