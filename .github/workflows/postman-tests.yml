@@ -29,9 +29,13 @@ jobs:
     # 4. Ejecutar Newman e inyectar de forma segura tu API Key en la variable apiKey
     - name: Ejecutar Coleccion de Postman
       run: |
+      # Lee el archivo JS y guárdalo temporalmente en una variable de entorno de Linux
+        LIB_CODE=$(cat scripts/metarValidator.js)
+        
         newman run "PostAir Weather API.postman_collection.json" \
           -e "Dev Environment.postman_environment.json" \
           --env-var "apiKey=${{ secrets.POSTMAN_API_KEY }}" \
+          --env-var "metarLibraryScript=$LIB_CODE" \
           -r cli,htmlextra
 
     # 5. Guardar el reporte para que lo descargues si algo falla
