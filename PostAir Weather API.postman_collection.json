@@ -997,11 +997,10 @@
                   "// 1.1 Asegura la compatibilidad asignando el objeto de la librería\r",
                   "const metarLibrary = this.metarLibrary;\r",
                   "\r",
-                  "\r",
-                  "// 2. Extraemos la respuesta del servidor \r",
+                  "// 2. Extraemos la respuesta del servidor\r",
                   "const response = pm.response.json();\r",
                   "\r",
-                  "// 3. Ejecutamos los validadores pasándole las propiedades directas de la raíz del JSON\r",
+                  "// 3. Ejecutamos los validadores pasándole las propiedades directas (SIN CORCHETES)\r",
                   "const formatResult = metarLibrary.validateMetar(response ? response.metar : null);\r",
                   "const windResult = metarLibrary.validateWindData(response ? response.wind : null);\r",
                   "const visResult = metarLibrary.validateVisibility(response ? response.visibility : null);\r",
@@ -1022,7 +1021,8 @@
                   "\r",
                   "pm.test('Temperature within standard safe range', function () {\r",
                   "    pm.expect(tempResult.valid).to.be.true;\r",
-                  "});"
+                  "});\r",
+                  ""
                 ],
                 "type": "text/javascript",
                 "packages": {},
