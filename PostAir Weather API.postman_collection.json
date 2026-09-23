@@ -1021,7 +1021,8 @@
                   "});\r",
                   "\r",
                   "pm.test('Temperature within standard safe range', function () {\r",
-                  "    pm.expect(tempResult.valid).to.be.true;"
+                  "    pm.expect(tempResult.valid).to.be.true;\r",
+                  "});"
                 ],
                 "type": "text/javascript",
                 "packages": {},
