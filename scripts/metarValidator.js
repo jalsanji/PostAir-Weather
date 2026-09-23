@@ -16,9 +16,13 @@ function metarFormatRegexStd() {
     );
 }
 
-function validateMetar(responseBody) {
+function validateMetar(rawMetar) {
+    // Si no viene ningún texto, fallamos de forma segura sin romper el código
+    if (!rawMetar || typeof rawMetar !== 'string') {
+        return { valid: false, raw: null, error: "METAR string missing or malformed" };
+    }
+
     const pattern = metarFormatRegexStd();
-    const rawMetar = responseBody[0].metar.raw;
     const isValid = pattern.test(rawMetar);
 
     return {
