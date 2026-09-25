@@ -46,7 +46,7 @@ function validateWindData(wind) {
 }
 
 function validateVisibility(visibility) {
-    const pattern = /^\d+SM\$/;
+    const pattern = /^\d+SM$/;
     if (!visibility || !pattern.test(visibility)) {
         return { valid: false, error: `Invalid visibility: ${visibility}` };
     }
