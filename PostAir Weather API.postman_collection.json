@@ -109,7 +109,7 @@
               "apikey": [
                 {
                   "key": "value",
-                  "value": "1234",
+                  "value": "",
                   "type": "string"
                 },
                 {
