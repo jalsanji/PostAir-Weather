@@ -33,8 +33,11 @@ function validateMetar(rawMetar) {
 }
 
 function validateWindData(wind) {
-    if (!wind || typeof wind.direction !== 'number') {
-        return { valid: false, error: 'Wind data missing or malformed' };
+    if (!wind || typeof wind.direction !== 'number' || typeof wind.speed !== 'number'
+       ) {
+        return {
+            valid: false,
+            error: 'Wind data missing or malformed' };
     }
     const dirValid = wind.direction >= 0 && wind.direction <= 360;
     const speedValid = wind.speed >= 0;
