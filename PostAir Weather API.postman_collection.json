@@ -109,7 +109,7 @@
               "apikey": [
                 {
                   "key": "value",
-                  "value": "",
+                  "value": "1234",
                   "type": "string"
                 },
                 {
@@ -1188,7 +1188,7 @@
                   "    pm.expect(firstItem.metar).to.have.property(\"wind\");\r",
                   "    pm.expect(firstItem.metar).to.have.property(\"visibility\");\r",
                   "    pm.expect(firstItem.metar).to.have.property(\"temperature\");\r",
-                  "\r",
+                  "});\r",
                   "const metar = response?.[0]?.metar;\r",
                   "\r",
                   "// Ejecutamos los validadores pasándole las propiedades directas\r",
