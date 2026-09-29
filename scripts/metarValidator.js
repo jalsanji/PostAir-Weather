@@ -57,7 +57,7 @@ function validateVisibility(visibility) {
 }
 
 function validateTemperature(temperature) {
-    if (temperature === undefined || typeof temperature !== 'number') {
+    if (typeof temperature !== 'number' || !Number.isFinite(temperature) {
         return { valid: false, error: `Temperature data missing or malformed` };
     }
     const tempValid = temperature >= -80 && temperature <= 60;
