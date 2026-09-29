@@ -78,8 +78,8 @@
                   "        pm.expect(datos).to.have.all.keys (\r",
                   "            \"type\", \"title\", \"status\", \"detail\", \"instance\", \"correlationId\"\r",
                   "        );\r",
-                  "        pm.expect(body.status).to.equal(404);\r",
-                  "        pm.expect(body.title).to.equal(\"Not Found\");\r",
+                  "        pm.expect(datos.status).to.equal(404);\r",
+                  "        pm.expect(datos.title).to.equal(\"Not Found\");\r",
                   "    });\r",
                   "\r",
                   "    pm.test(\"detail is descriptive\", () => {\r",
@@ -93,7 +93,7 @@
                   "pm.test(\"Content-Type is present\", function () {\r",
                   "    pm.response.to.have.header(\"Content-Type\");\r",
                   "});\r",
-                  "pm.test(\"Response time is less than 200ms\", function () {\r",
+                  "pm.test(\"Response time is less than 500ms\", function () {\r",
                   "    pm.expect(pm.response.responseTime).to.be.below(500);\r",
                   "});"
                 ],
@@ -109,7 +109,7 @@
               "apikey": [
                 {
                   "key": "value",
-                  "value": "",
+                  "value": "1234",
                   "type": "string"
                 },
                 {
@@ -421,6 +421,90 @@
       "item": [
         {
           "name": "Retrieve turbulence report",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const datos = pm.response.json();\r",
+                  "\r",
+                  "if (pm.response.code === 200) {\r",
+                  "\r",
+                  "    // TEST POSITIVOS\r",
+                  "\r",
+                  "    pm.test(\"Status code is 200\", function () {\r",
+                  "        pm.response.to.have.status(200);\r",
+                  "    });\r",
+                  "\r",
+                  "    pm.test(\"Response is an array\", function () {\r",
+                  "        pm.expect(datos).to.be.an(\"array\");\r",
+                  "    });\r",
+                  "\r",
+                  "    pm.test(\"Turbulence report contains required fields\", function () {\r",
+                  "        const report = datos[0].turbulenceReport;\r",
+                  "\r",
+                  "        pm.expect(report).to.have.property(\"timestamp\");\r",
+                  "        pm.expect(report).to.have.property(\"severity\");\r",
+                  "        pm.expect(report).to.have.property(\"altitude\");\r",
+                  "        pm.expect(report).to.have.property(\"durationMinutes\");\r",
+                  "        pm.expect(report).to.have.property(\"affectedArea\");\r",
+                  "        pm.expect(report).to.have.property(\"windSpeed\");\r",
+                  "        pm.expect(report).to.have.property(\"pilotReport\");\r",
+                  "        pm.expect(report).to.have.property(\"weatherConditions\");\r",
+                  "    });\r",
+                  "\r",
+                  "    pm.test(\"Airport code has valid IATA format\", function () {\r",
+                  "        const code = datos[0].airport.code;\r",
+                  "\r",
+                  "        pm.expect(code).to.match(/^[A-Z]{3}$/);\r",
+                  "    });\r",
+                  "\r",
+                  "} else if (pm.response.code === 404) {\r",
+                  "\r",
+                  "    // TESTS NEGATIVOS\r",
+                  "\r",
+                  "    pm.test(\"Status code is 404\", function () {\r",
+                  "        pm.response.to.have.status(404);\r",
+                  "    });\r",
+                  "\r",
+                  "    pm.test(\"Content-Type is problem+json\", function () {\r",
+                  "        const contentType = pm.response.headers.get(\"Content-Type\");\r",
+                  "\r",
+                  "        pm.expect(contentType).to.include(\"application/problem+json\");\r",
+                  "    });\r",
+                  "\r",
+                  "    pm.test(\"Body follows problemDetail schema\", function () {\r",
+                  "        pm.expect(datos).to.have.all.keys(\r",
+                  "            \"type\",\r",
+                  "            \"title\",\r",
+                  "            \"status\",\r",
+                  "            \"detail\",\r",
+                  "            \"instance\",\r",
+                  "            \"correlationId\"\r",
+                  "        );\r",
+                  "    });\r",
+                  "\r",
+                  "    pm.test(\"Error status is 404\", function () {\r",
+                  "        pm.expect(datos.status).to.equal(404);\r",
+                  "    });\r",
+                  "\r",
+                  "    pm.test(\"Error title is Not Found\", function () {\r",
+                  "        pm.expect(datos.title).to.equal(\"Not Found\");\r",
+                  "    });\r",
+                  "\r",
+                  "    pm.test(\"Error detail is descriptive\", function () {\r",
+                  "        pm.expect(datos.detail).to.equal(\r",
+                  "            \"No turbulence data found for the specified criteria\"\r",
+                  "        );\r",
+                  "    });\r",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
           "request": {
             "method": "GET",
             "header": [
@@ -430,7 +514,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/turbulence?airportCode=ATL",
+              "raw": "{{baseUrl}}/turbulence?airportCode=XXX",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -439,9 +523,9 @@
               ],
               "query": [
                 {
-                  "description": "airport code",
                   "key": "airportCode",
-                  "value": "ATL"
+                  "value": "XXX",
+                  "description": "airport code"
                 }
               ]
             },
@@ -685,6 +769,93 @@
               ],
               "cookie": [],
               "body": "{\n  \"type\": \"https://en.wikipedia.org/wiki/HTTP_500\",\n  \"title\": \"Internal Server Error\",\n  \"status\": 500,\n  \"detail\": \"Internal Server Error\",\n  \"instance\": \"urn:api:request:example-500\",\n  \"correlationId\": \"example-correlation-id\"\n}"
+            },
+            {
+              "name": "Retrieve turbulence report",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/turbulence?airportCode=ATL",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "turbulence"
+                  ],
+                  "query": [
+                    {
+                      "key": "airportCode",
+                      "value": "ATL",
+                      "description": "airport code"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Date",
+                  "value": "Tue, 29 Sep 2026 01:06:15 GMT"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "1257"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "x-amzn-RequestId",
+                  "value": "bd78242b-aae5-48c7-a578-49e97a04eb3a"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                },
+                {
+                  "key": "x-amzn-Remapped-Content-Length",
+                  "value": "1257"
+                },
+                {
+                  "key": "x-amzn-Remapped-Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "x-amz-apigw-id",
+                  "value": "Eb9JRFozIAMErtQ="
+                },
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"4e9-r8iIuLifFv3kGzfNjvFUhqPk8+0\""
+                },
+                {
+                  "key": "x-correlation-id",
+                  "value": "44d34cb0-6939-45d9-b6df-2f5fa90e7405"
+                },
+                {
+                  "key": "x-amzn-Remapped-Date",
+                  "value": "Tue, 29 Sep 2026 01:06:15 GMT"
+                }
+              ],
+              "cookie": [],
+              "body": "[\n    {\n        \"airport\": {\n            \"code\": \"ATL\"\n        },\n        \"turbulenceReport\": {\n            \"timestamp\": \"2023-08-09T06:45:41Z\",\n            \"severity\": \"moderate\",\n            \"altitude\": {\n                \"feet\": 29325,\n                \"meters\": 9276\n            },\n            \"durationMinutes\": 12,\n            \"affectedArea\": {\n                \"radiusNm\": 43,\n                \"center\": {\n                    \"latitude\": 49.1931313,\n                    \"longitude\": -0.3907558\n                }\n            },\n            \"windSpeed\": {\n                \"knots\": 5,\n                \"mph\": 25.9\n            },\n            \"pilotReport\": \"Light chop during approach\",\n            \"weatherConditions\": {\n                \"temperatureCelsius\": -20,\n                \"visibilityKm\": 41,\n                \"cloudCover\": \"scattered\"\n            }\n        }\n    },\n    {\n        \"airport\": {\n            \"code\": \"ATL\"\n        },\n        \"turbulenceReport\": {\n            \"timestamp\": \"2023-11-25T22:03:00Z\",\n            \"severity\": \"severe\",\n            \"altitude\": {\n                \"feet\": 37780,\n                \"meters\": 8846\n            },\n            \"durationMinutes\": 5,\n            \"affectedArea\": {\n                \"radiusNm\": 39,\n                \"center\": {\n                    \"latitude\": 55.7483994,\n                    \"longitude\": 37.8009297\n                }\n            },\n            \"windSpeed\": {\n                \"knots\": 73,\n                \"mph\": 53.2\n            },\n            \"pilotReport\": \"Light chop during approach\",\n            \"weatherConditions\": {\n                \"temperatureCelsius\": -5,\n                \"visibilityKm\": 27.1,\n                \"cloudCover\": \"clear\"\n            }\n        }\n    },\n    {\n        \"airport\": {\n            \"code\": \"ATL\"\n        },\n        \"turbulenceReport\": {\n            \"timestamp\": \"2023-12-06T06:23:10Z\",\n            \"severity\": \"severe\",\n            \"altitude\": {\n                \"feet\": 8512,\n                \"meters\": 178\n            },\n            \"durationMinutes\": 1,\n            \"affectedArea\": {\n                \"radiusNm\": 36,\n                \"center\": {\n                    \"latitude\": 9.7421342,\n                    \"longitude\": 99.9788481\n                }\n            },\n            \"windSpeed\": {\n                \"knots\": 22,\n                \"mph\": 31.8\n            },\n            \"pilotReport\": \"Moderate chop encountered\",\n            \"weatherConditions\": {\n                \"temperatureCelsius\": 8,\n                \"visibilityKm\": 26.2,\n                \"cloudCover\": \"partly cloudy\"\n            }\n        }\n    }\n]"
             }
           ]
         }
@@ -992,23 +1163,41 @@
                   "    pm.expect(sizeKB).to.be.below(10);\r",
                   "});\r",
                   "\r",
-                  "// 1. Cargamos tu librería en memoria de forma gratuita usando la variable del entorno\r",
+                  "// Cargamos la librería en memoria de forma gratuita usando la variable del entorno\r",
                   "eval(pm.environment.get(\"metarLibraryScript\"));\r",
-                  "// 1.1 Asegura la compatibilidad asignando el objeto de la librería\r",
+                  "// Asegura la compatibilidad asignando el objeto de la librería\r",
                   "const metarLibrary = this.metarLibrary;\r",
                   "\r",
-                  "// 2. Extraemos la respuesta del servidor\r",
+                  "// Extraemos la respuesta del servidor\r",
                   "const response = pm.response.json();\r",
+                  "\r",
+                  "// Validación primero de la estructura JSON\r",
+                  "pm.test(\"Response has valid METAR JSON structure\", function () {\r",
+                  "\r",
+                  "    pm.expect(response).to.be.an(\"array\");\r",
+                  "    pm.expect(response.length).to.be.greaterThan(0);\r",
+                  "\r",
+                  "    const firstItem = response[0];\r",
+                  "\r",
+                  "    pm.expect(firstItem).to.be.an(\"object\");\r",
+                  "    pm.expect(firstItem).to.have.property(\"metar\");\r",
+                  "\r",
+                  "    pm.expect(firstItem.metar).to.be.an(\"object\");\r",
+                  "\r",
+                  "    pm.expect(firstItem.metar).to.have.property(\"raw\");\r",
+                  "    pm.expect(firstItem.metar).to.have.property(\"wind\");\r",
+                  "    pm.expect(firstItem.metar).to.have.property(\"visibility\");\r",
+                  "    pm.expect(firstItem.metar).to.have.property(\"temperature\");\r",
                   "\r",
                   "const metar = response?.[0]?.metar;\r",
                   "\r",
-                  "// 3. Ejecutamos los validadores pasándole las propiedades directas (SIN CORCHETES)\r",
+                  "// Ejecutamos los validadores pasándole las propiedades directas\r",
                   "const formatResult = metarLibrary.validateMetar(metar?.raw);\r",
                   "const windResult = metarLibrary.validateWindData(metar?.wind);\r",
                   "const visResult = metarLibrary.validateVisibility(metar?.visibility);\r",
                   "const tempResult = metarLibrary.validateTemperature(metar?.temperature);\r",
                   "\r",
-                  "// 4. Reportamos los resultados al dashboard de QA de Postman y Newman\r",
+                  "// Reportamos los resultados al dashboard de QA de Postman y Newman\r",
                   "pm.test('METAR format is valid', function () {\r",
                   "    pm.expect(formatResult.valid).to.be.true;\r",
                   "});\r",
