@@ -71,9 +71,9 @@ function validateTemperature(temperature) {
 // Expone TODAS las funciones de manera global dentro de un objeto llamado metarLibrary
 // Esto reemplaza la necesidad de usar module.exports en el entorno gratuito de Newman
 this.metarLibrary = {
-    metarFormatRegexStd,
-    validateMetar,
-    validateWindData,
-    validateVisibility,
-    validateTemperature
+    metarFormatRegexStd: metarFormatRegexStd,
+    validateMetar: validateMetar,
+    validateWindData: validateWindData,
+    validateVisibility: validateVisibility,
+    validateTemperature: validateTemperature
 };
