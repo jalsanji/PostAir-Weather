@@ -1168,6 +1168,8 @@
                   "// Asegura la compatibilidad asignando el objeto de la librería\r",
                   "const metarLibrary = this.metarLibrary;\r",
                   "\r",
+                  "console.log(\"DEBUG metarLibrary:\", metarLibrary);\r",
+                  "\r",
                   "// Extraemos la respuesta del servidor\r",
                   "const response = pm.response.json();\r",
                   "\r",
